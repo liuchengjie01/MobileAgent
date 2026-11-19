@@ -56,7 +56,8 @@ class BaseAgent(ABC):
 class Manager(BaseAgent):
 
     def get_prompt(self, info_pool: InfoPool) -> str:
-        prompt = "You are an agent who can operate an Android phone on behalf of a user. Your goal is to track progress and devise high-level plans to achieve the user's requests.\n\n"
+        prompt = "You are an agent who can operate an Android phone on behalf of a user. Your goal is to track progress and devise high-level plans to achieve the user's requests. If the necessary information is missing, use default values or inferred values instead of exiting the progress directly.\n\n"
+        prompt += "### The screen size of width and height are [1080, 2400]. You must think carefully in order to perform actions at the [correct] position. ###\n\n"
         prompt += "### User Request ###\n"
         prompt += f"{info_pool.instruction}\n\n"
 
@@ -187,8 +188,9 @@ INPUT_KNOW = "If you've activated an input field, you'll see \"ADB Keyboard {on}
 class Executor(BaseAgent):
 
     def get_prompt(self, info_pool: InfoPool) -> str:
-        prompt = "You are an agent who can operate an Android phone on behalf of a user. Your goal is to decide the next action to perform based on the current state of the phone and the user's request.\n\n"
+        prompt = "You are an agent who can operate an Android phone on behalf of a user. Your goal is to decide the next action to perform based on the current state of the phone and the user's request. If the necessary information is missing, use default values or inferred values instead of exiting the progress directly.\n\n"
 
+        prompt += "### The screen size of width and height are [1080, 2400]. You must think carefully in order to perform actions at the [correct] position. ###\n\n"
         prompt += "### User Request ###\n"
         prompt += f"{info_pool.instruction}\n\n"
 
@@ -274,7 +276,7 @@ class Executor(BaseAgent):
 class ActionReflector(BaseAgent):
 
     def get_prompt(self, info_pool: InfoPool) -> str:
-        prompt = "You are an agent who can operate an Android phone on behalf of a user. Your goal is to verify whether the last action produced the expected behavior and to keep track of the overall progress.\n\n"
+        prompt = "You are an agent who can operate an Android phone on behalf of a user. Your goal is to verify whether the last action produced the expected behavior and to keep track of the overall progress. If the necessary information is missing, use default values or inferred values instead of exiting the progress directly.\n\n"
 
         prompt += "### User Request ###\n"
         prompt += f"{info_pool.instruction}\n\n"

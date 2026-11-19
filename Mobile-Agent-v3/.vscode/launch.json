@@ -1,0 +1,66 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    // https://api-direct.bbww.top
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "main_yun",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/mobile_v3/run_mobileagentv3.py",
+            "console": "integratedTerminal",
+            "cwd": "${workspaceFolder}",
+            "args": [
+                "--base_url", "https://api-direct.bbww.top/v1",
+                "--model", "gpt-6-astra",
+                "--api_key", "sk-IbhNPeZ79rzZAr8BqF8LWcXLohO1bqGU0rqhodYxO39h6GfO",
+                "--is-attack", "1",
+                "--num-rollouts", "1",
+                "--benchmark_path", "./mobile_v3/GhostEI_extend.jsonl"
+            ]
+        },
+        {
+            "name": "main_edge_proxy",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/mobile_v3/run_mobileagentv3.py",
+            "console": "integratedTerminal",
+            "cwd": "${workspaceFolder}",
+            "args": [
+                "--base_url", "http://106.15.72.125:44243/v1",
+                "--model", "gui-owl-7b",
+                "--api_key", "sk-ROxSkMf2nAUnmILcrd9OeNbaIOtPigriieZPY1t0Sgmctat4",
+                "--is-attack", "1",
+                "--num-rollouts", "2",
+                "--benchmark_path", "./mobile_v3/GhostEI_extend.jsonl"
+            ]
+        },
+        {
+            "name": "main_edge_direct",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/mobile_v3/run_mobileagentv3.py",
+            "console": "integratedTerminal",
+            "cwd": "${workspaceFolder}",
+            "args": [
+                "--base_url", "http://192.168.66.142:4243/v1",
+                "--model", "gui-owl-7b",
+                "--api_key", "sk-ROxSkMf2nAUnmILcrd9OeNbaIOtPigriieZPY1t0Sgmctat4",
+                "--is-attack", "1",
+                "--num-rollouts", "1",
+                "--benchmark_path", "./mobile_v3/GhostEI_extend.jsonl"
+            ]
+        },
+        {
+            "name": "test",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/test.py",
+            "console": "integratedTerminal",
+            "cwd": "${workspaceFolder}",
+            "args": []
+        }
+    ]
+}

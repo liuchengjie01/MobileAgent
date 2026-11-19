@@ -1,6 +1,7 @@
 import abc
 import time
 import base64
+import httpx
 import numpy as np
 from PIL import Image
 from io import BytesIO
@@ -69,7 +70,10 @@ class GUIOwlWrapper(LlmWrapper, MultimodalLlmWrapper):
             base_url: str,
             model_name: str,
             max_retry: int = 10,
-            temperature: float = 0.0,
+            temperature: float = 1.0,
+            top_p: float = 0.95,
+            do_sample=True,
+            top_k = -1
     ):
         if max_retry <= 0:
             max_retry = 10
@@ -77,10 +81,14 @@ class GUIOwlWrapper(LlmWrapper, MultimodalLlmWrapper):
         self.max_retry = min(max_retry, 10)
         self.temperature = temperature
         self.model = model_name
+        self.top_p = top_p
+        self.do_sample = do_sample
+        self.top_k = top_k
         self.bot = OpenAI(
             api_key=api_key,
             base_url=base_url,
-            timeout=30
+            timeout=30,
+            http_client=httpx.Client(http2=False, trust_env=False)
         )
 
     def convert_messages_format_to_openaiurl(self, messages):
@@ -129,12 +137,18 @@ class GUIOwlWrapper(LlmWrapper, MultimodalLlmWrapper):
         wait_seconds = self.RETRY_WAITING_SECONDS
         while counter > 0:
             try:
-              chat_completion_from_url = self.bot.chat.completions.create(model=self.model, messages=payload, **{})
-              return (chat_completion_from_url.choices[0].message.content, payload, chat_completion_from_url)
+              chat_completion_from_url = self.bot.chat.completions.create(
+                 model=self.model, 
+                 messages=payload, 
+                 temperature=self.temperature, 
+                 top_p=self.top_p,
+                 timeout=5*60
+                )
+              return (chat_completion_from_url.choices[0].message.content, payload, chat_completion_from_url, payload)
             except Exception as e:
                 time.sleep(wait_seconds)
                 wait_seconds *= 1
                 counter -= 1
                 print('Error calling LLM, will retry soon...')
                 print(e)
-        return ERROR_CALLING_LLM, None, None
+        return ERROR_CALLING_LLM, None, None, None
